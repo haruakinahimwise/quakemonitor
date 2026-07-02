@@ -22,7 +22,7 @@ function initApp() {
   initMap();
   initClock();
 
-  // poll every 5 seconds for now
+  // poll every half a second for now
   pollQuakes();
   setInterval(pollQuakes, 500);
 }
