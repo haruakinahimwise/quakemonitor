@@ -3,27 +3,37 @@
 let map;
 
 function initMap() {
-  map = L.map("map").setView([36.0, 138.0], 5);
+  debug("initMap() CALLED");
+
+  try {
+    map = L.map("map").setView([36.0, 138.0], 5);
+    debug("Leaflet map created");
+  } catch (e) {
+    debug("Leaflet FAILED to create map", e);
+    return;
+  }
+
+  debug("Adding tile layer…");
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 10,
     attribution: "&copy; OpenStreetMap contributors"
-  }).addTo(map);
+  })
+  .on("load", () => debug("Tile layer loaded"))
+  .on("tileerror", (e) => debug("Tile ERROR", e))
+  .addTo(map);
 
-  loadJapanGeoJSON();
-}
+  debug("Loading Japan GeoJSON…");
 
-function loadJapanGeoJSON() {
   fetch("assets/japan.geojson")
-    .then(res => res.json())
-    .then(data => {
-      L.geoJSON(data, {
-        style: {
-          color: "#374151",
-          weight: 1,
-          fillOpacity: 0.05
-        }
-      }).addTo(map);
+    .then(res => {
+      debug("GeoJSON response", { status: res.status });
+      return res.json();
     })
-    .catch(err => console.error("GeoJSON load error:", err));
+    .then(data => {
+      debug("GeoJSON parsed OK");
+      L.geoJSON(data).addTo(map);
+      debug("GeoJSON added to map");
+    })
+    .catch(err => debug("GeoJSON ERROR", err));
 }
