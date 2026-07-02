@@ -15,7 +15,7 @@ function initMap() {
   }).addTo(map);
 
   // Load Japan prefecture GeoJSON
-  loadJapanGeoJSON();
+  loadJapanGeoJSON();   // ← THIS IS THE CALL YOU NEEDED
 }
 
 // Load Japan GeoJSON from /assets
