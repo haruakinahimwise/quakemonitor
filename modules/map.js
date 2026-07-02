@@ -30,3 +30,18 @@ function updateEpicenter(lat, lon, shindo, regionName) {
     `震度: ${shindo}<br>${regionName || "不明"}`
   ).openPopup();
 }
+
+function loadJapanGeoJSON() {
+  fetch("assets/japan.geojson")
+    .then(res => res.json())
+    .then(data => {
+      L.geoJSON(data, {
+        style: {
+          color: "#374151",
+          weight: 1,
+          fillOpacity: 0.1
+        }
+      }).addTo(map);
+    })
+    .catch(err => console.error("GeoJSON load error:", err));
+}
