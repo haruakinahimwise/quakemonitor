@@ -89,3 +89,12 @@ main {
   margin-top: 8px;
   cursor: pointer;
 }
+
+/* Remove Quakes button (red) */
+#adm-remove {
+  background: #dc2626; /* red */
+}
+
+#adm-remove:hover {
+  background: #b91c1c; /* darker red */
+}
