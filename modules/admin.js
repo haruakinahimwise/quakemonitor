@@ -1,9 +1,12 @@
 // modules/admin.js
 
-document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.getElementById("adm-spawn");
+let adminQuakeMarkers = [];
 
-  btn.addEventListener("click", () => {
+document.addEventListener("DOMContentLoaded", () => {
+  const spawnBtn = document.getElementById("adm-spawn");
+  const removeBtn = document.getElementById("adm-remove");
+
+  spawnBtn.addEventListener("click", () => {
     const quake = {
       lat: parseFloat(document.getElementById("adm-lat").value),
       lon: parseFloat(document.getElementById("adm-lon").value),
@@ -14,10 +17,10 @@ document.addEventListener("DOMContentLoaded", () => {
       originTime: new Date().toLocaleTimeString()
     };
 
-    debug("ADMIN SPAWNED QUAKES", quake);
+    debug("ADMIN SPAWNED QUAKE", quake);
 
-    // Show marker on map
-    L.circle([quake.lat, quake.lon], {
+    // Create marker
+    const marker = L.circle([quake.lat, quake.lon], {
       radius: 5000,
       color: "#f00",
       fillColor: "#f00",
@@ -25,6 +28,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }).addTo(map).bindPopup(
       `Fake Quake<br>Region: ${quake.regionName}<br>Mag: ${quake.mag}<br>Shindo: ${quake.shindo}`
     );
+
+    // Save marker so we can remove it later
+    adminQuakeMarkers.push(marker);
 
     // Trigger wave animation
     if (typeof startWaveVisual === "function") {
@@ -40,5 +46,16 @@ document.addEventListener("DOMContentLoaded", () => {
     if (typeof updateCountdown === "function") {
       updateCountdown(quake);
     }
+  });
+
+  // REMOVE QUAKES BUTTON
+  removeBtn.addEventListener("click", () => {
+    debug("ADMIN REMOVED ALL QUAKES");
+
+    adminQuakeMarkers.forEach(marker => {
+      map.removeLayer(marker);
+    });
+
+    adminQuakeMarkers = [];
   });
 });
