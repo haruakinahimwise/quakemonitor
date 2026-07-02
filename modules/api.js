@@ -1,11 +1,23 @@
+// modules/api.js
+
+// Fetch real-time Kyoshin Monitor quake data
 async function fetchLatestQuake() {
-  // TODO: replace with real JMA/NIED API later
-  // For now, return a fake quake near Tokyo
-  return {
-    lat: 35.68,
-    lon: 139.76,
-    shindo: 4,
-    regionName: "東京都",
-    originTime: new Date().toISOString()
-  };
+  try {
+    const res = await fetch("https://www.kmoni.bosai.go.jp/webservice/quake.json");
+    const data = await res.json();
+
+    if (!data || !data.result) return null;
+
+    return {
+      lat: data.result.latitude,
+      lon: data.result.longitude,
+      shindo: data.result.calcintensity,
+      regionName: data.result.region_name,
+      originTime: data.result.origin_time
+    };
+
+  } catch (err) {
+    console.error("Kyoshin Monitor API error:", err);
+    return null;
+  }
 }
