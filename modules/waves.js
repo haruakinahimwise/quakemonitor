@@ -3,51 +3,62 @@
 let waveCircle;
 let waveTimer;
 
-// Draw expanding wave on the map
-function startWaveVisual(lat, lon) {
-  // Remove old wave if exists
+// Draw expanding P-wave based on real origin time
+function startWaveVisual(lat, lon, originDate) {
   if (waveCircle) {
     map.removeLayer(waveCircle);
   }
 
-  let radius = 1000; // start small (meters)
-
   waveCircle = L.circle([lat, lon], {
-    radius: radius,
+    radius: 0,
     color: "#3b82f6",
     weight: 2,
     fillOpacity: 0.05
   }).addTo(map);
 
-  // Animate the wave expanding
-  waveTimer = setInterval(() => {
-    radius += 5000; // expand 5km per tick
-    waveCircle.setRadius(radius);
+  const vP = 6; // km/s
 
-    // Stop after it covers Japan
-    if (radius > 2000000) { // 2000km
+  waveTimer = setInterval(() => {
+    const now = Date.now();
+    const seconds = (now - originDate.getTime()) / 1000;
+
+    if (seconds < 0) return; // EEW sometimes arrives early
+
+    const radiusMeters = seconds * vP * 1000;
+    waveCircle.setRadius(radiusMeters);
+
+    if (seconds > 600) { // stop after 10 minutes
       clearInterval(waveTimer);
     }
-  }, 100); // update every 0.1s
+  }, 100);
 }
 
-// Connect wave to quake detection
-function startWaveCountdown(quake, userLocation) {
-  // Start visual wave
-  startWaveVisual(quake.lat, quake.lon);
+// Distance formula (km)
+function distanceKm(a, b) {
+  const R = 6371;
+  const dLat = (b.lat - a.lat) * Math.PI / 180;
+  const dLon = (b.lon - a.lon) * Math.PI / 180;
+  const lat1 = a.lat * Math.PI / 180;
+  const lat2 = b.lat * Math.PI / 180;
 
-  // Your existing countdown code stays here
-  const origin = new Date(quake.originTime).getTime();
+  const x = Math.sin(dLat/2)**2 +
+            Math.sin(dLon/2)**2 * Math.cos(lat1) * Math.cos(lat2);
+  return R * 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1-x));
+}
+
+// Countdown using real origin time
+function startWaveCountdown(quake, userLocation) {
+  const origin = quake.originDate;
   const dist = distanceKm(
     { lat: quake.lat, lon: quake.lon },
     userLocation
   );
 
-  const vP = 6;   // km/s
-  const vS = 3.5; // km/s
+  const vP = 6;
+  const vS = 3.5;
 
-  const pArrival = origin + (dist / vP) * 1000;
-  const sArrival = origin + (dist / vS) * 1000;
+  const pArrival = origin.getTime() + (dist / vP) * 1000;
+  const sArrival = origin.getTime() + (dist / vS) * 1000;
 
   const el = document.getElementById("countdown");
 
@@ -57,7 +68,7 @@ function startWaveCountdown(quake, userLocation) {
     const sLeft = Math.max(0, Math.round((sArrival - now) / 1000));
 
     el.textContent =
-      `P波到達まで: ${pLeft} 秒 / S波到達まで: ${sLeft} 秒`;
+      `P波: ${pLeft} 秒 / S波: ${sLeft} 秒`;
 
     if (pLeft === 0 && sLeft === 0) {
       clearInterval(timer);
