@@ -8,6 +8,36 @@
   <!-- Leaflet CSS (CDN) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
+  <!-- Admin Panel -->
+<div id="admin-panel">
+  <h3>Admin Quake Spawner</h3>
+
+  <label>Latitude:
+    <input id="adm-lat" type="number" step="0.01" value="35.68">
+  </label>
+
+  <label>Longitude:
+    <input id="adm-lon" type="number" step="0.01" value="139.76">
+  </label>
+
+  <label>Magnitude:
+    <input id="adm-mag" type="number" step="0.1" value="5.0">
+  </label>
+
+  <label>Intensity (震度):
+    <input id="adm-shindo" type="number" step="0.1" value="4.0">
+  </label>
+
+  <label>Region:
+    <input id="adm-region" type="text" value="Tokyo">
+  </label>
+
+  <button id="adm-spawn">Spawn Quake</button>
+</div>
+
+<!-- Admin Panel Script -->
+<script src="modules/admin.js"></script>
+
 <body>
   <header>
     <h1>QuakeMonitor — 日本地震ライブ</h1>
