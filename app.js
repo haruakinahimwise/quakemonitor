@@ -24,7 +24,7 @@ function initApp() {
 
   // poll every 5 seconds for now
   pollQuakes();
-  setInterval(pollQuakes, 5000);
+  setInterval(pollQuakes, 1000);
 }
 
 document.addEventListener("DOMContentLoaded", initApp);
