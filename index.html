@@ -1,1 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>QuakeMonitor</title>
+  <link rel="stylesheet" href="style.css">
 
+  <!-- Leaflet CSS (local) -->
+  <link rel="stylesheet" href="vendor/leaflet.css">
+</head>
+<body>
+  <header>
+    <h1>QuakeMonitor — 日本地震ライブ</h1>
+    <div id="clock"></div>
+    <div id="alert"></div>
+    <div id="countdown"></div>
+  </header>
+
+  <main>
+    <div id="map"></div>
+  </main>
+
+  <!-- Leaflet JS (local) -->
+  <script src="vendor/leaflet.js"></script>
+
+  <!-- Modules -->
+  <script src="modules/utils.js"></script>
+  <script src="modules/map.js"></script>
+  <script src="modules/waves.js"></script>
+  <script src="modules/alarms.js"></script>
+  <script src="modules/api.js"></script>
+
+  <!-- Main app -->
+  <script src="app.js"></script>
+</body>
+</html>
