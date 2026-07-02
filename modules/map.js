@@ -3,37 +3,28 @@
 let map;
 
 function initMap() {
-  debug("initMap() CALLED");
+  // Create map centered on Japan
+  map = L.map("map").setView([36.0, 138.0], 5);
 
-  try {
-    map = L.map("map").setView([36.0, 138.0], 5);
-    debug("Leaflet map created");
-  } catch (e) {
-    debug("Leaflet FAILED to create map", e);
-    return;
-  }
-
-  debug("Adding tile layer…");
-
+  // Base map tiles
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 10,
     attribution: "&copy; OpenStreetMap contributors"
-  })
-  .on("load", () => debug("Tile layer loaded"))
-  .on("tileerror", (e) => debug("Tile ERROR", e))
-  .addTo(map);
+  }).addTo(map);
 
-  debug("Loading Japan GeoJSON…");
-
+  // Load Japan GeoJSON
   fetch("assets/japan.geojson")
-    .then(res => {
-      debug("GeoJSON response", { status: res.status });
-      return res.json();
-    })
+    .then(res => res.json())
     .then(data => {
-      debug("GeoJSON parsed OK");
-      L.geoJSON(data).addTo(map);
-      debug("GeoJSON added to map");
+      L.geoJSON(data, {
+        style: {
+          color: "#374151",
+          weight: 1,
+          fillOpacity: 0.05
+        }
+      }).addTo(map);
     })
-    .catch(err => debug("GeoJSON ERROR", err));
+    .catch(err => {
+      console.error("GeoJSON load error:", err);
+    });
 }
