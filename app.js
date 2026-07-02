@@ -29,7 +29,7 @@ function initApp() {
   initClock();
 
   pollQuakes();
-  setInterval(pollQuakes, 2000); // EEW updates fast
+  setInterval(pollQuakes, 1000); // EEW updates fast
 }
 
 document.addEventListener("DOMContentLoaded", initApp);
