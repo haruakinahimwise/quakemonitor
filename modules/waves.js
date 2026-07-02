@@ -27,7 +27,7 @@ function startWaveVisual(lat, lon, originDate) {
     const radiusMeters = seconds * vP * 1000;
     waveCircle.setRadius(radiusMeters);
 
-    if (seconds > 600) { // stop after 10 minutes
+    if (seconds > 300) { // stop after 10 minutes
       clearInterval(waveTimer);
     }
   }, 100);
